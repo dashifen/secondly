@@ -1,3 +1,3 @@
 # Secondly
 
-A WordPress application for time tracking.
+An application for time tracking encapsulated in a WordPress theme.

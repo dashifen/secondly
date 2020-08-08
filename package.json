@@ -2,7 +2,7 @@
   "license": "MIT",
   "version": "1.0.0",
   "name": "secondly",
-  "description": "A WordPress application for time tracking.",
+  "description": "An application for time tracking encapsulated in a WordPress theme.",
   "repository": {
     "url": "git+https://github.com/dashifen/secondly.git",
     "type": "git"

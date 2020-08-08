@@ -1,6 +1,6 @@
 {
   "name": "dashifen/secondly",
-  "description": "A WordPress application for time tracking.",
+  "description": "An application for time tracking encapsulated in a WordPress theme.",
   "minimum-stability": "stable",
   "type": "project",
   "license": "MIT",
@@ -12,57 +12,17 @@
     }
   ],
   "config": {
-    "vendor-dir": "deps/vendor",
     "optimize-autoloader": true,
     "sort-packages": true
-  },
-  "extra": {
-    "wordpress-install-dir": "wp",
-    "installer-paths": {
-      "deps/plugins/{$name}/": [
-        "type:wordpress-plugin"
-      ],
-      "deps/themes/{$name}/": [
-        "type:wordpress-theme"
-      ],
-      "deps/mu-plugins/{$name}/": [
-        "type:wordpress-muplugin"
-      ]
-    }
   },
   "autoload": {
     "psr-4": {
       "Dashifen\\Secondly\\": "src"
     }
   },
-  "repositories": [
-    {
-      "type": "composer",
-      "url": "https://wpackagist.org"
-    },
-    {
-      "type": "package",
-      "package": {
-        "name": "advanced-custom-fields/advanced-custom-fields-pro",
-        "version": "5.8.12",
-        "type": "wordpress-plugin",
-        "dist": {
-          "type": "zip",
-          "url": "https://connect.advancedcustomfields.com/index.php?a=download&p=pro&k={%ACF_PRO_KEY}&t={%version}"
-        },
-        "require": {
-          "composer/installers": "^1.4",
-          "ffraenz/private-composer-installer": "^2.0"
-        }
-      }
-    }
-  ],
   "require": {
-    "advanced-custom-fields/advanced-custom-fields-pro": "*",
-    "dashifen/anti-brute-squad": "^2.0",
-    "johnpbloch/wordpress": "^5.4",
-    "lkwdwrd/wp-muplugin-loader": "^1.0",
-    "timber/timber": "^1.17",
-    "wpackagist-theme/twentytwenty": "^1.4"
+    "dashifen/wp-handler": "^10.0",
+    "dashifen/wp-templates": "^4.0",
+    "timber/timber": "^1.17"
   }
 }
