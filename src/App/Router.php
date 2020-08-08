@@ -2,6 +2,7 @@
 
 namespace Dashifen\Secondly\App;
 
+use Dashifen\Secondly\Templates\Homepage;
 use Dashifen\WPTemplates\TemplateInterface;
 use Dashifen\WPHandler\Traits\CaseChangingTrait;
 
@@ -40,7 +41,7 @@ class Router
       // doesn't work.  so, for it we'll just specify the homepage template
       // directly.
       
-      $object = 'Dashifen\Secondly\Templates\Homepage';
+      $object = Homepage::class;
     } else {
       
       // otherwise, our route matches the folder structure that we've created
@@ -52,7 +53,8 @@ class Router
       
       $makeStudly = fn(string $x): string => self::camelToStudlyCase($x);
       $partial = array_map($makeStudly, explode('/', $_SERVER['REQUEST_URI']));
-      $object = array_merge(['Dashifen','Secondly','Templates'], $partial);
+      $complete = array_merge(['Dashifen','Secondly','Templates'], $partial);
+      $object = join('\\', $complete);
     }
 
     return $this->controller->getTemplate($object);
