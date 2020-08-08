@@ -3,6 +3,7 @@ const {src, dest, parallel, watch} = require('gulp'),
   sourcemaps = require('gulp-sourcemaps'),
   autoPrefixer = require('autoprefixer'),
   browserSync = require('browser-sync'),
+  cleanCss = require('gulp-clean-css'),
   webpack = require('webpack-stream'),
   postcss = require('gulp-postcss'),
   plumber = require('gulp-plumber'),
@@ -39,6 +40,7 @@ const css = async function () {
     .pipe(sourcemaps.init())
     .pipe(sass())
     .pipe(postcss([autoPrefixer(), cssNano()]))
+    .pipe(cleanCss())
     .pipe(sourcemaps.write())
     .pipe(dest(paths.css.dest))
     .pipe(browserSync.stream());
@@ -85,16 +87,16 @@ const watcher = async function () {
     }
   });
 
-  css();
-  jsDev();
+  await css();
+  await jsDev();
   watch(paths.content).on('change', browserSync.reload);
   watch(paths.js.src, jsDev);
   watch(paths.css.src, css);
 };
 
 const justWatch = async function () {
-  css();
-  jsDev();
+  await css();
+  await jsDev();
   watch(paths.js.src, jsDev);
   watch(paths.css.src, css);
 }

@@ -1,0 +1,40 @@
+html {
+  box-sizing: border-box;
+}
+
+*, *::before, *::after {
+  box-sizing: inherit;
+}
+
+a {
+  &:link,
+  &:visited {
+    color: $gray;
+  }
+
+  &:active,
+  &:focus,
+  &:hover {
+    color: $plum;
+  }
+}
+
+body {
+  color: $black;
+  font-family: Recursive, sans-serif;
+  font-size: rem(18px);
+  font-variation-settings: 'CASL' 1;
+  font-weight: 500;
+
+  /*&.admin-bar {
+    margin-top: -32px;
+  }*/
+}
+
+strong {
+  font-weight: 700;
+}
+
+em {
+  font-variation-settings: 'CASL' 1, 'slnt' -15;
+}
