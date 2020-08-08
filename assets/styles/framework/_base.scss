@@ -9,13 +9,17 @@ html {
 a {
   &:link,
   &:visited {
+    border-bottom: 2px solid $gray;
     color: $gray;
+    text-decoration: none;
   }
 
   &:active,
   &:focus,
   &:hover {
+    border-style: none;
     color: $plum;
+    text-decoration: underline;
   }
 }
 
@@ -36,5 +40,6 @@ strong {
 }
 
 em {
+  font-style: italic;
   font-variation-settings: 'CASL' 1, 'slnt' -15;
 }

@@ -1,0 +1,13 @@
+<!doctype html>
+<html class="no-js" {{ function('language_attributes') }}>
+<head>
+  <title>{{ page.title }} | {{ site.title }}</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  {{ function('wp_head') }}
+</head>
+<body {{ function('body_class') }}>
+  <div id="vue-root">
+    <a href="#content" class="screen-reader-text">Skip to the Content</a>
+    <header class="banner"></header>
+    <main class="main" id="content">

@@ -4,10 +4,13 @@ namespace Dashifen\Secondly\Templates\Framework;
 
 use Timber\Timber;
 use Dashifen\WPTemplates\AbstractTemplate;
+use Dashifen\WPDebugging\WPDebuggingTrait;
 use Dashifen\WPTemplates\TemplateException as WPTemplatesException;
 
 abstract class AbstractSecondlyTemplate extends AbstractTemplate
 {
+  use WPDebuggingTrait;
+  
   /**
    * AbstractSecondlyTemplate constructor.
    *
@@ -15,32 +18,49 @@ abstract class AbstractSecondlyTemplate extends AbstractTemplate
    */
   public function __construct()
   {
-    parent::__construct(
-      $this->assignTwig(),
-      $this->assignContext()
+    $context = array_merge(
+      $this->getDefaultContext(),
+      $this->getTemplateContext()
     );
+    
+    parent::__construct($this->getTemplateTwig(), $context);
   }
   
   /**
-   * assignTwig
+   * getDefaultContext
    *
-   * Returns the name of our twig template which is assigned to our file
-   * property using the setFile method.  Named "assign" to make it more clear
-   * that this isn't a typical, public setter.
-   *
-   * @return string
-   */
-  abstract protected function assignTwig(): string;
-  
-  /**
-   * assignContext
-   *
-   * Returns an array that is assigned to the context property.  Named "assign"
-   * to make it more clear that this isn't a typical, public setter.
+   * Returns an array of data that's used throughout the site.
    *
    * @return array
    */
-  abstract protected function assignContext(): array;
+  private function getDefaultContext(): array
+  {
+    return [
+      'year' => date('Y'),
+      'site' => [
+        'title' => 'Secondly'
+      ]
+    ];
+  }
+  
+  /**
+   * getTemplateContext
+   *
+   * Returns an array of data for this template's context that is merged with
+   * the default data to form the context for the entire request.
+   *
+   * @return array
+   */
+  abstract protected function getTemplateContext(): array;
+  
+  /**
+   * getTemplateTwig
+   *
+   * Returns the name of this template's twig file.
+   *
+   * @return string
+   */
+  abstract protected function getTemplateTwig(): string;
   
   /**
    * compile
@@ -64,7 +84,7 @@ abstract class AbstractSecondlyTemplate extends AbstractTemplate
     // those are null.  things remain empty after our assignments, we throw an
     // exception.
     
-    if (empty($file ??= $this->twig)) {
+    if (empty($file ??= $this->file)) {
       throw new TemplateException(
         'Cannot compile without twig.',
         TemplateException::UNKNOWN_TWIG
@@ -78,20 +98,20 @@ abstract class AbstractSecondlyTemplate extends AbstractTemplate
       );
     }
     
+    $compilation = Timber::fetch($file, $context);
+  
     // if we haven't exited, then we'll print the information in our file and
     // context for debugging purposes if we're called to do so.  then, we pass
     // the necessary information over to the Timber::fetch method and call it a
     // day.
-    
+  
     if ($debug || self::isDebug()) {
-      self::debug(
-        [
-          'file'    => $file,
-          'context' => $context,
-        ]
-      );
+      $context['twig'] = $file;
+      $compilation .= '<!--' . PHP_EOL;
+      $compilation .= print_r($context, true);
+      $compilation .= PHP_EOL . '-->';
     }
     
-    return Timber::fetch($file, $context);
+    return $compilation;
   }
 }

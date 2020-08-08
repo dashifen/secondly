@@ -82,6 +82,7 @@ class Controller
     try {
       $template = self::$container->get($template);
     } catch (NotFoundException $e) {
+      header("HTTP/1.0 404 Not Found");
       $template = self::$container->get(FourOhFour::class);
     }
     
