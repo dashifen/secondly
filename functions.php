@@ -7,6 +7,7 @@
 use Timber\Timber;
 use Dashifen\Secondly\Theme;
 use Dashifen\Exception\Exception;
+use Dashifen\Secondly\App\Controller;
 
 // the autoloader might be in one of two locations:  the if-condition defines
 // the location on the web, the else defines it on Dash's local machine.  if
@@ -19,7 +20,8 @@ require_once $autoloader;
 
 (function (): void {
   try {
-    $theme = new Theme();
+    $controller = new Controller();
+    $theme = $controller->getTheme();
     
     // Timber needs to know where to find our twigs.  since they're in a folder
     // adjacent to the theme's stylesheet, we can identify that location very

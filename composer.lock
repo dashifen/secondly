@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "516acde84b8e30abf4032272c01080d7",
+    "content-hash": "48c3eecda7332fac8958af460b07653b",
     "packages": [
         {
             "name": "altorouter/altorouter",
@@ -252,6 +252,44 @@
                 }
             ],
             "time": "2020-04-07T06:57:05+00:00"
+        },
+        {
+            "name": "dashifen/acf-agent",
+            "version": "2.2.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/dashifen/acf-agents.git",
+                "reference": "064f79a675c1c0cbdbb0f24390a69275cb38e25e"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/dashifen/acf-agents/zipball/064f79a675c1c0cbdbb0f24390a69275cb38e25e",
+                "reference": "064f79a675c1c0cbdbb0f24390a69275cb38e25e",
+                "shasum": ""
+            },
+            "require": {
+                "dashifen/wp-handler": "^10.0",
+                "php": ">=7.4"
+            },
+            "type": "project",
+            "autoload": {
+                "psr-4": {
+                    "Dashifen\\ACFAgent\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "David Dashifen Kees",
+                    "email": "dashifen@dashifen.com",
+                    "role": "developer"
+                }
+            ],
+            "description": "An Agent for use with one of my Handler packages that manages ACF data.",
+            "time": "2020-07-31T16:55:00+00:00"
         },
         {
             "name": "dashifen/collection",

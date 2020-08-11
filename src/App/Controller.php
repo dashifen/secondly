@@ -2,11 +2,13 @@
 
 namespace Dashifen\Secondly\App;
 
+use Dashifen\Secondly\Theme;
 use League\Container\Container;
 use League\Container\ReflectionContainer;
 use Dashifen\WPTemplates\TemplateInterface;
 use Dashifen\Secondly\Templates\FourOhFour;
 use League\Container\Exception\NotFoundException;
+use Dashifen\Secondly\Agents\Collection\Factory\SecondlyAgentCollectionFactory;
 
 class Controller
 {
@@ -59,13 +61,37 @@ class Controller
     // https://container.thephpleague.com/3.x/auto-wiring.
     
     self::$container = new Container();
+    self::$container->defaultToShared();
     self::$container->delegate(new ReflectionContainer());
-    self::$container->share(Controller::class);
+    self::$container->add(Controller::class);
+    
+    self::$container->add(SecondlyAgentCollectionFactory::class)
+      ->addMethodCall('registerAgents');
+    
+    self::$container->add(Theme::class)
+      ->addMethodCall(
+        'setAgentCollection',
+        [
+          self::$container->get(SecondlyAgentCollectionFactory::class),
+        ]
+      );
     
     // our router will need a reference to this object.  this is so that it can
     // access the getTemplate() method we define below.
     
-    self::$container->share(Router::class)->addArgument($this);
+    self::$container->add(Router::class)->addArgument($this);
+  }
+  
+  /**
+   * getTheme
+   *
+   * Returns an instance of the Theme object.
+   *
+   * @return Theme
+   */
+  public function getTheme(): Theme
+  {
+    return self::$container->get(Theme::class);
   }
   
   /**
@@ -92,7 +118,7 @@ class Controller
   /**
    * getRouter
    *
-   * Returns the Router object.
+   * Returns an instance of the Router object.
    *
    * @return Router
    */

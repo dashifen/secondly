@@ -1,12 +1,24 @@
 <?php
+/**
+ * @noinspection PhpDocFieldTypeMismatchInspection
+ */
 
 namespace Dashifen\Secondly;
 
 use Dashifen\WPHandler\Handlers\HandlerException;
 use Dashifen\WPHandler\Handlers\Themes\AbstractThemeHandler;
+use Dashifen\Secondly\Agents\Collection\SecondlyAgentCollection;
+use Dashifen\WPHandler\Agents\Collection\AgentCollectionInterface;
 
 class Theme extends AbstractThemeHandler
 {
+  public const PREFIX = 'secondly';
+  
+  /**
+   * @var SecondlyAgentCollection
+   */
+  protected AgentCollectionInterface $agentCollection;
+  
   /**
    * initialize
    *
@@ -19,9 +31,35 @@ class Theme extends AbstractThemeHandler
   public function initialize(): void
   {
     if (!$this->isInitialized()) {
+      
+      // we initialize agents at priority 1 so that the default priority of 10
+      // will still be available for agents to use.  otherwise, there could be
+      // a timing problem if we initialize agents during the same action and
+      // priority that they want to do stuff.
+      
+      $this->addAction('init', 'initializeAgents', 1);
+      $this->addAction('after_switch_theme', 'flushPermalinks');
       $this->addAction('wp_enqueue_scripts', 'addAssets');
       $this->addAction('template_redirect', 'forceAuthentication');
       $this->addFilter('wp_die_handler', 'getExceptionHandler');
+    }
+  }
+  
+  /**
+   * flushPermalinks
+   *
+   * Themes don't really get an activation action in the way that plugins do,
+   * but they can use the after_switch_theme hook to perform similar work.
+   * This method watches for the activation of our theme and then makes sure
+   * that our permalinks are ready-to-go.  we flush all the time when
+   *
+   * @return void
+   */
+  protected function flushPermalinks(): void
+  {
+    if (self::isDebug() || wp_get_theme()->get('Name') === 'Secondly') {
+      $this->agentCollection->getPostTypeRegistrationAgent()->register();
+      flush_rewrite_rules();
     }
   }
   
@@ -38,7 +76,7 @@ class Theme extends AbstractThemeHandler
     // of weights between 400 and 700 (normal and bold) and a slant range of
     // -15 to 0 (italic to vertical).
     
-    $this->enqueue('//fonts.googleapis.com/css2?family=Recursive:CASL,wght,slnt@1,400..700,-15..0&display=swap');
+    $this->enqueue('//fonts.googleapis.com/css2?family=Recursive:slnt,wght,CASL@-15..0,400..700,1&display=swap');
     $this->enqueue('assets/dashifen.css');
     $this->enqueue('assets/dashifen.js');
   }
