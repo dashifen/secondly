@@ -27,12 +27,7 @@ body {
   color: $black;
   font-family: Recursive, sans-serif;
   font-size: rem(18px);
-  font-variation-settings: 'CASL' 1;
   font-weight: 500;
-
-  /*&.admin-bar {
-    margin-top: -32px;
-  }*/
 }
 
 strong {
@@ -41,5 +36,5 @@ strong {
 
 em {
   font-style: italic;
-  font-variation-settings: 'CASL' 1, 'slnt' -15;
+  font-variation-settings: 'slnt' -15;
 }

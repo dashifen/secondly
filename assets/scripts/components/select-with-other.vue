@@ -6,7 +6,8 @@ export default {
 
   data: function () {
     return {
-      'value': this.original
+      'value': this.original,
+      'optArray': JSON.parse(this.options),
     }
   },
 
@@ -17,6 +18,14 @@ export default {
 
     otherLabel() {
       return this.ucfirst(this.name) + ' Other';
+    },
+
+    otherPlaceholder() {
+      return 'Enter other ' + this.name;
+    },
+
+    hideOther() {
+      return this.value !== 'other';
     }
   },
 
@@ -24,10 +33,6 @@ export default {
     ucfirst(string) {
       string = String(string);
       return string.charAt(0).toUpperCase() + string.slice(1);
-    },
-
-    hideOther() {
-      return this.value !== 'other';
     }
   }
 };
@@ -37,18 +42,15 @@ export default {
   <li>
     <label>
       <span v-text="ucfirst(name)"></span>
-      <select :id="name" :name="name" v-model="value">
-        <option v-for="option in options" :value="option.value" v-text="option.text"></option>
+      <select :id="name" :name="name" :aria-controls="otherId" v-model="value">
+        <option value=""></option>
+        <option v-for="option in optArray" :value="option.value" v-text="option.text" :selected="option.value = value"></option>
         <option value="other">Other...</option>
       </select>
     </label>
-    <label :class='{ "swo-hidden": hideOther }'>
+    <label :class='{ "visually-hidden": hideOther }' aria-live="polite">
       <span class="screen-reader-text" v-text="otherLabel"></span>
-      <input type="text" :id="otherId" :name="otherId" >
+      <input type="text" :id="otherId" :name="otherId" :placeholder="otherPlaceholder">
     </label>
   </li>
 </template>
-
-<style scoped>
-
-</style>

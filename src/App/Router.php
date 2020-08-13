@@ -3,6 +3,7 @@
 namespace Dashifen\Secondly\App;
 
 use Dashifen\Secondly\Templates\Homepage;
+use Dashifen\WPDebugging\WPDebuggingTrait;
 use Dashifen\WPTemplates\TemplateInterface;
 use Dashifen\WPHandler\Traits\CaseChangingTrait;
 
@@ -51,8 +52,8 @@ class Router
       // the PHP class naming standards) and then add in the templates'
       // namespace.
       
-      $makeStudly = fn(string $x): string => self::camelToStudlyCase($x);
-      $partial = array_map($makeStudly, explode('/', $_SERVER['REQUEST_URI']));
+      $nonBlankParts = array_filter(explode('/', $_SERVER['REQUEST_URI']));
+      $partial = array_map(fn(string $x): string => self::camelToStudlyCase($x), $nonBlankParts);
       $complete = array_merge(['Dashifen','Secondly','Templates'], $partial);
       $object = join('\\', $complete);
     }

@@ -41,6 +41,7 @@ class Theme extends AbstractThemeHandler
       $this->addAction('after_switch_theme', 'flushPermalinks');
       $this->addAction('wp_enqueue_scripts', 'addAssets');
       $this->addAction('template_redirect', 'forceAuthentication');
+      $this->addFilter('template_include', 'forceIndexTemplate');
       $this->addFilter('wp_die_handler', 'getExceptionHandler');
     }
   }
@@ -72,11 +73,14 @@ class Theme extends AbstractThemeHandler
    */
   protected function addAssets(): void
   {
-    // we request the Recursive variable font's casual subfamily with a range
-    // of weights between 400 and 700 (normal and bold) and a slant range of
-    // -15 to 0 (italic to vertical).
+    // we request the Recursive variable font with a range of weights between
+    // 400 and 700 (normal and bold) and a slant range of -15 to 0 (italic to
+    // vertical).
     
-    $this->enqueue('//fonts.googleapis.com/css2?family=Recursive:slnt,wght,CASL@-15..0,400..700,1&display=swap');
+    $this->enqueue('//fonts.googleapis.com/css2?family=Recursive:slnt,wght@-15..0,400..700&display=swap');
+    
+    //wp_enqueue_style('fonts', '//fonts.googleapis.com/css2?family=Recursive:slnt,wght@-15..0,400..700&display=swap');
+    
     $this->enqueue('assets/dashifen.css');
     $this->enqueue('assets/dashifen.js');
   }
@@ -92,6 +96,21 @@ class Theme extends AbstractThemeHandler
     if (get_current_user_id() === 0) {
       wp_safe_redirect(wp_login_url(home_url()));
     }
+  }
+  
+  /**
+   * forceIndexTemplate
+   *
+   * Eventually, this may change, but at the moment, we just load everything
+   * via index.php.
+   *
+   * @param string $template
+   *
+   * @return string
+   */
+  protected function forceIndexTemplate(string $template): string
+  {
+    return locate_template('index.php');
   }
   
   /**
