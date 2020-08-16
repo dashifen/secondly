@@ -16,6 +16,10 @@ class Router
 {
   use CaseChangingTrait;
   
+  public const APP_ROUTES = [
+    'add-record'
+  ];
+  
   protected Controller $controller;
   
   /**
@@ -25,6 +29,28 @@ class Router
    */
   public function __construct(Controller $controller) {
     $this->controller = $controller;
+  }
+  
+  /**
+   * isAppRoute
+   *
+   * Returns true if the current route is one of our application routes.
+   *
+   * @return bool
+   */
+  public static function isAppRoute(): bool
+  {
+    $route = untrailingslashit($_SERVER['REQUEST_URI']);
+    
+    // above, we remove a trailing slash if it exists.  we also want to remove
+    // a leading slash if it's present.  so, we check if the first character is
+    // a slash, and if it is, we hack it off and keep the rest.
+    
+    if (substr($route, 0, 1) === '/') {
+      $route = substr($route, 1);
+    }
+    
+    return in_array($route, Router::APP_ROUTES);
   }
   
   /**

@@ -39,18 +39,17 @@ export default {
 </script>
 
 <template>
-  <li>
-    <label>
-      <span v-text="ucfirst(name)"></span>
-      <select :id="name" :name="name" :aria-controls="otherId" v-model="value">
-        <option value=""></option>
-        <option v-for="option in optArray" :value="option.value" v-text="option.text" :selected="option.value = value"></option>
-        <option value="other">Other...</option>
-      </select>
-    </label>
+  <li class="select-with-other">
+    <label :for="name" v-text="ucfirst(name)" class="required"></label>
+    <!--suppress HtmlFormInputWithoutLabel -->
+    <select :id="name" :name="name" :aria-controls="otherId" v-model="value" aria-required="true" required>
+      <option value=""></option>
+      <option v-for="option in optArray" :value="option.value" v-text="option.text" :selected="option.value = value"></option>
+      <option value="other">Other...</option>
+    </select>
     <label :class='{ "visually-hidden": hideOther }' aria-live="polite">
       <span class="screen-reader-text" v-text="otherLabel"></span>
-      <input type="text" :id="otherId" :name="otherId" :placeholder="otherPlaceholder">
+      <input type="text" :id="otherId" :name="otherId" :placeholder="otherPlaceholder" :aria-required="hideOther ? 'false' : 'true'" :required="!hideOther">
     </label>
   </li>
 </template>

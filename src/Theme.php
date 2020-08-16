@@ -5,13 +5,19 @@
 
 namespace Dashifen\Secondly;
 
+use Dashifen\Secondly\App\Router;
+use Dashifen\WPDebugging\WPDebuggingTrait;
 use Dashifen\WPHandler\Handlers\HandlerException;
+use Dashifen\WPHandler\Traits\OptionsManagementTrait;
 use Dashifen\WPHandler\Handlers\Themes\AbstractThemeHandler;
 use Dashifen\Secondly\Agents\Collection\SecondlyAgentCollection;
 use Dashifen\WPHandler\Agents\Collection\AgentCollectionInterface;
 
 class Theme extends AbstractThemeHandler
 {
+  use OptionsManagementTrait;
+  use WPDebuggingTrait;
+  
   public const PREFIX = 'secondly';
   
   /**
@@ -32,13 +38,18 @@ class Theme extends AbstractThemeHandler
   {
     if (!$this->isInitialized()) {
       
+      // themes don't get an activation action in the way that plugins do.
+      // but, we can use the after_theme_switch hook to do something similar.
+      
+      $this->addAction('after_switch_theme', 'flushPermalinks');
+      
       // we initialize agents at priority 1 so that the default priority of 10
       // will still be available for agents to use.  otherwise, there could be
       // a timing problem if we initialize agents during the same action and
       // priority that they want to do stuff.
       
       $this->addAction('init', 'initializeAgents', 1);
-      $this->addAction('after_switch_theme', 'flushPermalinks');
+      $this->addAction('init', 'addAppRoutesAsEndpoints');
       $this->addAction('wp_enqueue_scripts', 'addAssets');
       $this->addAction('template_redirect', 'forceAuthentication');
       $this->addFilter('template_include', 'forceIndexTemplate');
@@ -49,17 +60,49 @@ class Theme extends AbstractThemeHandler
   /**
    * flushPermalinks
    *
-   * Themes don't really get an activation action in the way that plugins do,
-   * but they can use the after_switch_theme hook to perform similar work.
    * This method watches for the activation of our theme and then makes sure
-   * that our permalinks are ready-to-go.  we flush all the time when
+   * that our permalinks are ready-to-go.
    *
    * @return void
+   * @throws HandlerException
    */
   protected function flushPermalinks(): void
   {
     if (self::isDebug() || wp_get_theme()->get('Name') === 'Secondly') {
       $this->agentCollection->getPostTypeRegistrationAgent()->register();
+      $this->addAppRoutesAsEndpoints();
+      flush_rewrite_rules();
+    }
+  }
+  
+  /**
+   * addAppRoutesAsEndpoints
+   *
+   * Adds the application routes (e.g. add-record) to the endpoints that WP
+   * knows about preventing a 404 header from being thrown by the WP router.
+   *
+   * @return void
+   * @throws HandlerException
+   */
+  protected function addAppRoutesAsEndpoints(): void
+  {
+    foreach (Router::APP_ROUTES as $route) {
+      
+      // the false we send to the add_rewrite_endpoint means that we don't
+      // register a query variable for these endpoints.
+      
+      add_rewrite_endpoint($route, EP_ROOT, false);
+    }
+    
+    // now that we've registered our routes, we need to determine if we have
+    // to flush the rewrite rules to update the permalinks for these endpoints.
+    // if the current size of the routes we just registered is different from
+    // what our record of application routes is in the database, then we flush
+    // the rules after updating the database record of the route counts.
+    
+    $routeCount = sizeof(Router::APP_ROUTES);
+    if ($routeCount !== $this->getOption('secondly-app-route-count', 0)) {
+      $this->updateOption('secondly-app-route-count', $routeCount);
       flush_rewrite_rules();
     }
   }
@@ -78,11 +121,16 @@ class Theme extends AbstractThemeHandler
     // vertical).
     
     $this->enqueue('//fonts.googleapis.com/css2?family=Recursive:slnt,wght@-15..0,400..700&display=swap');
-    
-    //wp_enqueue_style('fonts', '//fonts.googleapis.com/css2?family=Recursive:slnt,wght@-15..0,400..700&display=swap');
-    
     $this->enqueue('assets/dashifen.css');
-    $this->enqueue('assets/dashifen.js');
+    
+    // for our script, we enqueue it and then we add a an inline script after
+    // it that'll guarantee that we have a variable that tells scripts where
+    // the WP admin ajax page is.
+    
+    wp_add_inline_script(
+      $this->enqueue('assets/dashifen.js'),
+      'window.ajaxUrl = "' . admin_url('admin-ajax.php') . '";'
+    );
   }
   
   /**
@@ -101,8 +149,7 @@ class Theme extends AbstractThemeHandler
   /**
    * forceIndexTemplate
    *
-   * Eventually, this may change, but at the moment, we just load everything
-   * via index.php.
+   * Forces the index template for our application routes.
    *
    * @param string $template
    *
@@ -110,7 +157,7 @@ class Theme extends AbstractThemeHandler
    */
   protected function forceIndexTemplate(string $template): string
   {
-    return locate_template('index.php');
+    return Router::isAppRoute() ? locate_template('index.php') : $template;
   }
   
   /**
@@ -118,13 +165,54 @@ class Theme extends AbstractThemeHandler
    *
    * Returns the name of exception handler for this application.
    *
-   * @return string
+   * @return callable
    */
-  protected function getExceptionHandler(): string
+  protected function getExceptionHandler(): callable
   {
-    // at the moment, we simply use the WP default die handler; eventually we
-    // can make something better.
-    
-    return '_default_wp_die_handler';
+    return function ($message): void {
+      self::debug($message, true);
+    };
+  }
+  
+  /**
+   * getOptionNames
+   *
+   * Returns an array of valid option names for use within the isOptionValid
+   * method.
+   *
+   * @return array
+   */
+  protected function getOptionNames(): array
+  {
+    return array_map(
+      fn(string $option): string => self::PREFIX . '-' . $option,
+      [
+        'app-route-count',
+      ]
+    );
+  }
+  
+  /**
+   * getProjects
+   *
+   * Returns an array of the projects for which we're tracking time.
+   *
+   * @return array
+   */
+  public function getProjects(): array
+  {
+    return [];
+  }
+  
+  /**
+   * getTasks
+   *
+   * Returns an array, indexed by projects, of each project's tasks.
+   *
+   * @return array
+   */
+  public function getTasks(): array
+  {
+    return [];
   }
 }

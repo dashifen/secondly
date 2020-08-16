@@ -1,0 +1,63 @@
+fieldset {
+  border: 0;
+  margin-bottom: 1rem;
+  padding: 0;
+
+  ol {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  li {
+    margin-bottom: rem(20px);
+
+    &.select-with-other input {
+      margin-top: rem(3px);
+    }
+  }
+
+  label {
+    display: block;
+
+    &:not([aria-live])::after {
+
+      // the :not([aria-live]) part excludes the <label> around the other
+      // field for select-with-other components.
+
+      content: ':';
+    }
+  }
+
+  &.add-record {
+    ol {
+      display: flex;
+      margin-bottom: rem(20px);
+    }
+
+    li {
+      margin-bottom: 0;
+
+      & + li {
+        margin-left: 1rem;
+      }
+
+      &.select-with-other {
+        &, select, input {
+          width: rem(250px);
+        }
+      }
+    }
+  }
+}
+
+.add-record {
+  #date {
+    width: 150px;
+  }
+
+  #end,
+  #start {
+    width: 100px;
+  }
+}

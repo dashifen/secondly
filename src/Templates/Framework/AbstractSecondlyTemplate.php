@@ -3,6 +3,7 @@
 namespace Dashifen\Secondly\Templates\Framework;
 
 use Timber\Timber;
+use Dashifen\Secondly\Theme;
 use Dashifen\WPTemplates\AbstractTemplate;
 use Dashifen\WPDebugging\WPDebuggingTrait;
 use Dashifen\WPTemplates\TemplateException as WPTemplatesException;
@@ -11,17 +12,29 @@ abstract class AbstractSecondlyTemplate extends AbstractTemplate
 {
   use WPDebuggingTrait;
   
+  protected Theme $theme;
+  
   /**
    * AbstractSecondlyTemplate constructor.
    *
+   * @param Theme $theme
+   *
    * @throws WPTemplatesException
    */
-  public function __construct()
+  public function __construct(Theme $theme)
   {
+    // we set our theme and then get the context for our template.  that's
+    // because the gathering of our context may need theme methods to do its
+    // work.
+    
+    $this->theme = $theme;
     $context = array_merge(
       $this->getDefaultContext(),
       $this->getTemplateContext()
     );
+    
+    // once we've got our context, we pass it and the name of our twig to
+    // our parent's constructor and our work here is done.
     
     parent::__construct($this->getTemplateTwig(), $context);
   }

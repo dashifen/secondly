@@ -4,6 +4,7 @@ namespace Dashifen\Secondly\App;
 
 use Dashifen\Secondly\Theme;
 use League\Container\Container;
+use Dashifen\Debugging\DebuggingTrait;
 use League\Container\ReflectionContainer;
 use Dashifen\WPTemplates\TemplateInterface;
 use Dashifen\Secondly\Templates\FourOhFour;
@@ -12,6 +13,8 @@ use Dashifen\Secondly\Agents\Collection\Factory\SecondlyAgentCollectionFactory;
 
 class Controller
 {
+  use DebuggingTrait;
+  
   private static ?Container $container = null;
   
   /**
@@ -106,6 +109,12 @@ class Controller
   public function getTemplate(string $template): TemplateInterface
   {
     try {
+      
+      // the Theme parameter to an AbstractSecondlyTemplate's constructor is
+      // auto-wired into place.  and, because we defaulted to shared objects
+      // when we configured our DI container above, we know that the template
+      // gets the same Theme object as everything else does.
+  
       $template = self::$container->get($template);
     } catch (NotFoundException $e) {
       header("HTTP/1.0 404 Not Found");

@@ -23,7 +23,7 @@ use Dashifen\Secondly\App\Controller;
     // just send it to the screen.  hopefully that'll clue Dash into how a fix
     // might be possible.
     
-    wp_die($e->getMessage());
+    wp_die($e);
   }
 })();
 

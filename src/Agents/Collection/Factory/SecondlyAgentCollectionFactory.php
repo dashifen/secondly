@@ -3,6 +3,7 @@
 namespace Dashifen\Secondly\Agents\Collection\Factory;
 
 use Dashifen\Repository\RepositoryException;
+use Dashifen\Secondly\Agents\RecordManagementAgent;
 use Dashifen\Secondly\Agents\PostTypeRegistrationAgent;
 use Dashifen\Secondly\Agents\Collection\SecondlyAgentCollection;
 use Dashifen\WPHandler\Agents\Collection\AgentCollectionInterface;
@@ -37,6 +38,7 @@ class SecondlyAgentCollectionFactory extends AgentCollectionFactory implements S
   public function registerAgents(): void
   {
     $this->registerAgent(PostTypeRegistrationAgent::class);
+    $this->registerAgent(RecordManagementAgent::class);
   }
   
 }

@@ -1,27 +1,17 @@
 {% include 'partials/header.twig' %}
 
-<fieldset>
-  <legend><h1>Add Record</h1></legend>
-  <ol>
-    <li>
-      <label for="date">Date</label>
-      <input type="date" id="date" name="date">
-    </li>
-    <li>
-      <label for="start">Start</label>
-      <input type="time" id="start" name="start">
-    </li>
-    <li>
-      <label for="end">End</label>
-      <input type="time" id="end" name="end">
-    </li>
-    <li>
-      <label for="activity">Activity</label>
-      <input type="text" id="activity" name="activity">
-    </li>
-    <li is="select-with-other" options='[]' name="project" original="">
+<!--suppress CheckTagEmptyBody -->
 
-
-
+<section id="record-form">
+  <record-form
+    record-id="{{ recordForm.recordId }}"
+    action="{{ recordForm.action }}"
+    destination="{{ recordForm.destination }}"
+    json-values='{{ recordForm.jsonValues }}'
+    json-projects='{{ recordForm.jsonProjects }}'
+    json-tasks='{{ recordForm.jsonTasks }}'
+    nonce='{{ recordForm.nonce }}'
+  ></record-form>
+</section>
 
 {% include 'partials/footer.twig' %}
