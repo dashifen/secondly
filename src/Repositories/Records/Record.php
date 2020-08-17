@@ -4,6 +4,7 @@ namespace Dashifen\Secondly\Repositories\Records;
 
 use Dashifen\Secondly\App\RecordValidator;
 use Dashifen\Repository\RepositoryException;
+use Dashifen\Secondly\Agents\PostTypeRegistrationAgent;
 use Dashifen\Secondly\Repositories\ValidatingRepository;
 
 /**
@@ -129,9 +130,17 @@ class Record extends ValidatingRepository
    * @param string $activity
    *
    * @return void
+   * @throws RecordException
    */
   protected function setActivity(string $activity): void
   {
+    if (!$this->validator->isValid('activity', $activity)) {
+      throw new RecordException(
+        'A record\'s activity cannot be empty',
+        RecordException::INVALID_ACTIVITY
+      );
+    }
+    
     $this->activity = $activity;
   }
   
@@ -140,21 +149,23 @@ class Record extends ValidatingRepository
    *
    * Sets the project ID property.
    *
-   * @param array $projectData
+   * @param array $project
    *
    * @return void
    * @throws RecordException
    */
-  protected function setProjectId(array $projectData): void
+  protected function setProjectId(array $project): void
   {
-    if (!$this->validator->isValid('termData', $projectData)) {
+    if (!$this->validator->isValid('termData', $project)) {
       throw new RecordException(
-        'Invalid project data: ' . json_encode($projectData),
+        'Invalid project data: ' . json_encode($project),
         RecordException::INVALID_PROJECT_DATA
       );
     }
     
-    
+    $this->projectId = $project['id'] === 'other'
+      ? wp_insert_term($project['other'], PostTypeRegistrationAgent::PROJECT)
+      : $project['id'];
   }
   
   /**
@@ -162,20 +173,45 @@ class Record extends ValidatingRepository
    *
    * Sets the task ID property.
    *
-   * @param array $taskData
+   * @param array $task
    *
    * @return void
    * @throws RecordException
    */
-  protected function setTaskId(array $taskData): void
+  protected function setTaskId(array $task): void
   {
-    if (!$this->validator->isValid('termData', $taskData)) {
+    if (!$this->validator->isValid('termData', $task)) {
       throw new RecordException(
-        'Invalid task data: ' . json_encode($taskData),
+        'Invalid task data: ' . json_encode($task),
         RecordException::INVALID_TASK_DATA
       );
     }
     
-    $this->taskId = $taskData['id'] === 'other';
+    if (!is_numeric($this->projectId)) {
+      throw new RecordException(
+        'Cannot add task without associated project',
+        RecordException::NO_PROJECT_ID
+      );
+    }
+    
+    // tasks are linked to specific projects.  in the setProjectId method, we
+    // could just insert our project when it didn't exist and be done.  but
+    // here, if the task doesn't exist, we insert it and then add a term meta
+    // datum that creates the link to its project.
+    
+    if ($task['id'] === 'other') {
+      $task['id'] = wp_insert_term($task['other'], PostTypeRegistrationAgent::TASK);
+      
+      // above, if the term doesn't insert, we just let PHP throw a type error
+      // to identify the problem for the time being.  but, here we need to
+      // check by hand because we're about to use it before PHP would interact
+      // with the property type hint in anyway.
+      
+      if (is_numeric($task['id'])) {
+        add_term_meta($task['id'], 'project', $this->projectId);
+      }
+    }
+    
+    $this->taskId = $task['id'];
   }
 }

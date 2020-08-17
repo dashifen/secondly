@@ -58,6 +58,20 @@ class RecordValidator extends AbstractValidator
   }
   
   /**
+   * validateActivity
+   *
+   * Returns true as long as our value is not empty.
+   *
+   * @param string $value
+   *
+   * @return bool
+   */
+  protected function validateActivity(string $value): bool
+  {
+    return $this->isNotEmpty($value);
+  }
+  
+  /**
    * validateTermData
    *
    * Returns true if $value is valid term data.  That is, if it is either
