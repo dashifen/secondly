@@ -12,8 +12,16 @@ export default {
   },
 
   computed: {
+    selectName() {
+      return this.name + '[id]';
+    },
+
     otherId() {
       return 'other-' + this.name;
+    },
+
+    otherName() {
+      return this.name + '[other]';
     },
 
     otherLabel() {
@@ -31,8 +39,7 @@ export default {
 
   methods: {
     ucfirst(string) {
-      string = String(string);
-      return string.charAt(0).toUpperCase() + string.slice(1);
+      return String(string).charAt(0).toUpperCase() + string.slice(1);
     }
   }
 };
@@ -42,14 +49,14 @@ export default {
   <li class="select-with-other">
     <label :for="name" v-text="ucfirst(name)" class="required"></label>
     <!--suppress HtmlFormInputWithoutLabel -->
-    <select :id="name" :name="name" :aria-controls="otherId" v-model="value" aria-required="true" required>
+    <select :id="name" :name="selectName" :aria-controls="otherId" v-model="value" aria-required="true" required>
       <option value=""></option>
       <option v-for="option in optArray" :value="option.value" v-text="option.text" :selected="option.value = value"></option>
       <option value="other">Other...</option>
     </select>
     <label :class='{ "visually-hidden": hideOther }' aria-live="polite">
       <span class="screen-reader-text" v-text="otherLabel"></span>
-      <input type="text" :id="otherId" :name="otherId" :placeholder="otherPlaceholder" :aria-required="hideOther ? 'false' : 'true'" :required="!hideOther">
+      <input type="text" :id="otherId" :name="otherName" :placeholder="otherPlaceholder" :aria-required="hideOther ? 'false' : 'true'" :required="!hideOther">
     </label>
   </li>
 </template>

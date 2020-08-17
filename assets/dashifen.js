@@ -2590,8 +2590,16 @@ __webpack_require__.r(__webpack_exports__);
   },
 
   computed: {
+    selectName() {
+      return this.name + '[id]';
+    },
+
     otherId() {
       return 'other-' + this.name;
+    },
+
+    otherName() {
+      return this.name + '[other]';
     },
 
     otherLabel() {
@@ -2609,8 +2617,7 @@ __webpack_require__.r(__webpack_exports__);
 
   methods: {
     ucfirst(string) {
-      string = String(string);
-      return string.charAt(0).toUpperCase() + string.slice(1);
+      return String(string).charAt(0).toUpperCase() + string.slice(1);
     }
   }
 });
@@ -2884,7 +2891,7 @@ var render = function() {
         ],
         attrs: {
           id: _vm.name,
-          name: _vm.name,
+          name: _vm.selectName,
           "aria-controls": _vm.otherId,
           "aria-required": "true",
           required: ""
@@ -2939,7 +2946,7 @@ var render = function() {
           attrs: {
             type: "text",
             id: _vm.otherId,
-            name: _vm.otherId,
+            name: _vm.otherName,
             placeholder: _vm.otherPlaceholder,
             "aria-required": _vm.hideOther ? "false" : "true",
             required: !_vm.hideOther

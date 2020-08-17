@@ -96,6 +96,6 @@ class RecordManagementAgent extends AbstractThemeAgent
    */
   protected function addRecord(): void
   {
-    self::debug($_REQUEST, true);
+  
   }
 }

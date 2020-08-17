@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "48c3eecda7332fac8958af460b07653b",
+    "content-hash": "bc99bd3ebac1ba9e19ba7e2fb6c07807",
     "packages": [
         {
             "name": "altorouter/altorouter",
@@ -478,6 +478,49 @@
             "time": "2020-03-11T14:56:21+00:00"
         },
         {
+            "name": "dashifen/validator",
+            "version": "2.0.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/dashifen/validator.git",
+                "reference": "5e713d267f3821eea1aa54fc1372834f77794db4"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/dashifen/validator/zipball/5e713d267f3821eea1aa54fc1372834f77794db4",
+                "reference": "5e713d267f3821eea1aa54fc1372834f77794db4",
+                "shasum": ""
+            },
+            "require": {
+                "dashifen/exception": "^1",
+                "ext-fileinfo": "*",
+                "php": ">=7.3",
+                "ralouphie/mimey": "^2"
+            },
+            "suggest": {
+                "ext-fileinfo": "*"
+            },
+            "type": "project",
+            "autoload": {
+                "psr-4": {
+                    "Dashifen\\Validator\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "David Dashifen Kees",
+                    "email": "dashifen@dashifen.com",
+                    "role": "developer"
+                }
+            ],
+            "description": "An interface and abstract class useful for the production of objects which validate data.",
+            "time": "2020-06-11T18:39:16+00:00"
+        },
+        {
             "name": "dashifen/wp-debugging",
             "version": "1.0.0",
             "source": {
@@ -715,6 +758,46 @@
                 "psr"
             ],
             "time": "2017-02-14T16:28:37+00:00"
+        },
+        {
+            "name": "ralouphie/mimey",
+            "version": "2.1.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/ralouphie/mimey.git",
+                "reference": "8f74e6da73f9df7bd965e4e123f3d8fb9acb89ba"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/ralouphie/mimey/zipball/8f74e6da73f9df7bd965e4e123f3d8fb9acb89ba",
+                "reference": "8f74e6da73f9df7bd965e4e123f3d8fb9acb89ba",
+                "shasum": ""
+            },
+            "require": {
+                "php": "^5.4|^7.0"
+            },
+            "require-dev": {
+                "php-coveralls/php-coveralls": "^1.1",
+                "phpunit/phpunit": "^4.8 || ^5.7 || ^6.5"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Mimey\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Ralph Khattar",
+                    "email": "ralph.khattar@gmail.com"
+                }
+            ],
+            "description": "PHP package for converting file extensions to MIME types and vice versa.",
+            "time": "2019-03-08T08:49:03+00:00"
         },
         {
             "name": "symfony/polyfill-ctype",
@@ -1067,7 +1150,10 @@
     "stability-flags": [],
     "prefer-stable": false,
     "prefer-lowest": false,
-    "platform": [],
+    "platform": {
+        "php": ">=7.4",
+        "ext-json": ">=7.4"
+    },
     "platform-dev": [],
     "plugin-api-version": "1.1.0"
 }

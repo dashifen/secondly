@@ -24,9 +24,10 @@
     "php": ">=7.4",
     "ext-json": ">=7.4",
     "dashifen/acf-agent": "^2.2",
+    "dashifen/validator": "^2.0",
     "dashifen/wp-handler": "^10.0",
     "dashifen/wp-templates": "^4.0",
     "league/container": "^3.3",
-    "timber/timber": "^1.17",
+    "timber/timber": "^1.17"
   }
 }
