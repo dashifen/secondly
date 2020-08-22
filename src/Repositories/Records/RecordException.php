@@ -12,4 +12,6 @@ class RecordException extends RepositoryException
   public const INVALID_PROJECT_DATA = 4;
   public const INVALID_TASK_DATA = 5;
   public const NO_PROJECT_ID = 6;
+  public const NO_RECORD_ID = 7;
+  public const INVALID_RECORD = 8;
 }

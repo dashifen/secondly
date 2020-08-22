@@ -3,8 +3,10 @@
 namespace Dashifen\Secondly\Agents;
 
 use Dashifen\WPDebugging\WPDebuggingTrait;
+use Dashifen\Repository\RepositoryException;
 use Dashifen\WPHandler\Agents\AbstractThemeAgent;
 use Dashifen\WPHandler\Handlers\HandlerException;
+use Dashifen\Secondly\Repositories\Records\Record;
 use Dashifen\WPHandler\Handlers\Themes\ThemeHandlerInterface;
 
 class RecordManagementAgent extends AbstractThemeAgent
@@ -93,9 +95,16 @@ class RecordManagementAgent extends AbstractThemeAgent
    * Uses the posted data to add a record to the database.
    *
    * @return void
+   * @throws RepositoryException
    */
   protected function addRecord(): void
   {
-  
+    $record = new Record($_REQUEST);
+    
+    if (sizeof($record->errors) > 0) {
+      wp_die(join('<br>', $record->errors));
+    }
+    
+    $record->save();
   }
 }

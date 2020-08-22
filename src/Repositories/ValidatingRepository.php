@@ -5,6 +5,13 @@ namespace Dashifen\Secondly\Repositories;
 use Dashifen\Repository\Repository;
 use Dashifen\Repository\RepositoryException;
 
+/**
+ * Class ValidatingRepository
+ *
+ * @property-read array $errors
+ *
+ * @package Dashifen\Secondly\Repositories
+ */
 class ValidatingRepository extends Repository
 {
   protected array $errors = [];
