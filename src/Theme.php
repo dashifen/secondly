@@ -6,12 +6,19 @@
 namespace Dashifen\Secondly;
 
 use Dashifen\Secondly\App\Router;
+use Latitude\QueryBuilder\QueryFactory;
 use Dashifen\WPDebugging\WPDebuggingTrait;
+use Latitude\QueryBuilder\Engine\MySqlEngine;
 use Dashifen\WPHandler\Handlers\HandlerException;
 use Dashifen\WPHandler\Traits\OptionsManagementTrait;
+use Dashifen\Secondly\Agents\PostTypeRegistrationAgent;
 use Dashifen\WPHandler\Handlers\Themes\AbstractThemeHandler;
 use Dashifen\Secondly\Agents\Collection\SecondlyAgentCollection;
 use Dashifen\WPHandler\Agents\Collection\AgentCollectionInterface;
+
+use function Latitude\QueryBuilder\on;
+use function Latitude\QueryBuilder\alias;
+use function Latitude\QueryBuilder\field;
 
 class Theme extends AbstractThemeHandler
 {
@@ -19,6 +26,9 @@ class Theme extends AbstractThemeHandler
   use WPDebuggingTrait;
   
   public const PREFIX = 'secondly';
+  
+  private array $projects;
+  private array $tasks;
   
   /**
    * @var SecondlyAgentCollection
@@ -201,7 +211,23 @@ class Theme extends AbstractThemeHandler
    */
   public function getProjects(): array
   {
-    return [];
+    // for projects, all we need is a map of IDs to names for the project
+    // taxonomy.  luckily, the fields argument for a WP_Term_Query can give us
+    // exactly that.  so, we can just return the array that get_terms produces
+    // without alteration.  if we haven't set our private $projects property,
+    // we do that now so that we only have to make this query once.
+    
+    if (!isset($this->projects)) {
+      $this->projects = get_terms(
+        [
+          'taxonomy'   => PostTypeRegistrationAgent::PROJECT,
+          'fields'     => 'id=>name',
+          'hide_empty' => false,
+        ]
+      );
+    }
+    
+    return $this->projects;
   }
   
   /**
@@ -213,6 +239,83 @@ class Theme extends AbstractThemeHandler
    */
   public function getTasks(): array
   {
-    return [];
+    // just like the prior method, we want to cache our list of tasks for each
+    // request.  this method does a lot of work (as you'll shortly see) so
+    // this cache helps avoid that work over and over again.
+    
+    if (isset($this->tasks)) {
+      return $this->tasks;
+    }
+    
+    global $wpdb;
+    
+    // for tasks, we need to do more work than we did for projects.  that's
+    // because we want a multi-dimensional array indexed by project ID in which
+    // values are the project's name and the terms within it.  that means we
+    // can use the prior method to get the projects and then, with them, we
+    // get term information.  instead of making N queries, where N is the count
+    // of projects, we'll make one query that we build ourselves and gets us
+    // everything that we need all at once.
+    
+    $projects = $this->getProjects();
+    $queryFactory = new QueryFactory(new MySqlEngine());
+    $query = $queryFactory
+      ->select('tt.term_id', 'name', alias('meta_value', 'project'))
+      ->from(alias($wpdb->term_taxonomy, 'tt'))
+      ->join(alias($wpdb->terms, 't'), on('tt.term_id', 't.term_id'))
+      ->join(alias($wpdb->termmeta, 'tm'), on('tt.term_id', 'tm.term_id'))
+      ->where(field('meta_key')->eq(PostTypeRegistrationAgent::PROJECT))
+      ->andWhere(field('taxonomy')->eq(PostTypeRegistrationAgent::TASK))
+      ->compile();
+    
+    // our query factory produces a SQL string with question marks in place of
+    // the parameters.  but, the WPDB class uses sprintf-like markers for its
+    // params.  since both of our parameters are strings, in this case, we can
+    // rather quickly switch those marks for %s as follows.
+    
+    $sql = str_replace('?', '%s', $query->sql());
+    $statement = $wpdb->prepare($sql, $query->params());
+    $terms = $wpdb->get_results($statement, ARRAY_A);
+    
+    // now we have a list of our terms along with their project association.
+    // but, we need to split that up into the project-indexed list that we send
+    // back to the calling scope.  to do that, we loop over our projects and
+    // liberally use array_filter to create the structure we want.
+    
+    $tasks = [];
+    foreach ($projects as $projectId => $project) {
+      
+      // we use == rather than === in our anonymous function because the value
+      // in our array is a string while $projectId is an int.  we could cast
+      // one to the other, but that seems unnecessary; a loosely typed
+      // comparison is good enough for us here.
+      
+      $filtered = array_filter(
+        $terms,
+        fn(array $t): bool => $t['project'] == $projectId
+      );
+      
+      // now that we have our filtered list, we want to change that from a
+      // numerically indexed array of arrays into an ID to name mapping.  we
+      // array_combine takes two arrays and makes the first the keys and the
+      // latter the values for the final array.  so, we make two mappings that
+      // pluck the IDs and names out of our array and pass those to into a
+      // call to array_combine to get the array we want.
+      
+      $tasks[$projectId] = [
+        'project' => $project,
+        'tasks'   => array_combine(
+          array_map(fn(array $t): string => $t['term_id'], $filtered),
+          array_map(fn(array $t): string => $t['name'], $filtered)
+        ),
+      ];
+    }
+    
+    // notice that we set the $tasks array that we've constructed through this
+    // method to a property right before we return it.  this sets our cache of
+    // tasks and makes sure that we only do the above data manipulation once
+    // per page request.
+  
+    return $this->tasks = $tasks;
   }
 }

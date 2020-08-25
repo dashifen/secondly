@@ -2,7 +2,12 @@
 
 namespace Dashifen\Secondly\Repositories\Records;
 
+use WP_Post;
+use WP_Term;
+use WP_Error;
+use Dashifen\Secondly\Theme;
 use Dashifen\Secondly\App\RecordValidator;
+use Dashifen\WPDebugging\WPDebuggingTrait;
 use Dashifen\Repository\RepositoryException;
 use Dashifen\WPHandler\Handlers\HandlerException;
 use Dashifen\WPHandler\Traits\PostMetaManagementTrait;
@@ -17,22 +22,23 @@ use Dashifen\Secondly\Repositories\ValidatingRepository;
  * @property-read string $start
  * @property-read string $end
  * @property-read string $activity
- * @property-read int    $projectId
- * @property-read int    $taskId
+ * @property-read int    $project
+ * @property-read int    $task
  *
  * @package Dashifen\Secondly\Repositories\Records
  */
 class Record extends ValidatingRepository implements RecordInterface
 {
   use PostMetaManagementTrait;
+  use WPDebuggingTrait;
   
   protected int $id = 0;
   protected string $date;
   protected string $start;
   protected string $end;
   protected string $activity;
-  protected int $projectId;
-  protected int $taskId;
+  protected int $project;
+  protected int $task;
   private bool $valid = false;
   
   // our parent class doesn't require that we use a Validator object to do
@@ -153,7 +159,7 @@ class Record extends ValidatingRepository implements RecordInterface
   }
   
   /**
-   * setProjectId
+   * setProject
    *
    * Sets the project ID property.
    *
@@ -162,7 +168,7 @@ class Record extends ValidatingRepository implements RecordInterface
    * @return void
    * @throws RecordException
    */
-  protected function setProjectId(array $project): void
+  protected function setProject(array $project): void
   {
     if (!$this->validator->isValid('termData', $project)) {
       throw new RecordException(
@@ -171,13 +177,39 @@ class Record extends ValidatingRepository implements RecordInterface
       );
     }
     
-    $this->projectId = $project['id'] === 'other'
-      ? wp_insert_term($project['other'], PostTypeRegistrationAgent::PROJECT)['term_id']
-      : $project['id'];
+    if ($project['id'] === 'other') {
+      $project['id'] = $this->maybeCreateOtherTerm($project['other'], PostTypeRegistrationAgent::PROJECT);
+    }
+    
+    $this->project = $project['id'];
   }
   
   /**
-   * setTaskId
+   * maybeCreateOtherTerm
+   *
+   * Adds a term to the database while also avoiding an accidental re-insertion
+   * of a term.
+   *
+   * @param string $termName
+   * @param string $taxonomy
+   *
+   * @return int
+   */
+  private function maybeCreateOtherTerm(string $termName, string $taxonomy): int
+  {
+    // first, we'll try to select a term with the given name from the specified
+    // taxonomy.  if we can't do so, the we'll insert a new term using our
+    // parameters and return it's ID.  but, if the term exists, we'll just
+    // send back it's ID to avoid WP yelling at us about duplicating a term.
+  
+    $term = get_term_by('name', $termName, $taxonomy);
+    return !($term instanceof WP_Term)
+      ? wp_insert_term($termName, $taxonomy)['term_id']
+      : $term->term_id;
+  }
+  
+  /**
+   * setTask
    *
    * Sets the task ID property.
    *
@@ -186,7 +218,7 @@ class Record extends ValidatingRepository implements RecordInterface
    * @return void
    * @throws RecordException
    */
-  protected function setTaskId(array $task): void
+  protected function setTask(array $task): void
   {
     if (!$this->validator->isValid('termData', $task)) {
       throw new RecordException(
@@ -195,7 +227,7 @@ class Record extends ValidatingRepository implements RecordInterface
       );
     }
     
-    if (!is_numeric($this->projectId)) {
+    if (!is_numeric($this->project)) {
       throw new RecordException(
         'Cannot add task without associated project',
         RecordException::NO_PROJECT_ID
@@ -208,19 +240,21 @@ class Record extends ValidatingRepository implements RecordInterface
     // datum that creates the link to its project.
     
     if ($task['id'] === 'other') {
-      $this->taskId = wp_insert_term($task['other'], PostTypeRegistrationAgent::TASK)['term_id'];
-      
-      // above, if the term doesn't insert, we just let PHP throw a type error
-      // to identify the problem for the time being.  but, here we need to
-      // check by hand because we're about to use it before PHP would interact
-      // with the property type hint in anyway.
-      
+      $task['id'] = $this->maybeCreateOtherTerm($task['other'], PostTypeRegistrationAgent::TASK);
       if (is_numeric($task['id'])) {
-        add_term_meta($task['id'], 'project', $this->projectId);
+        
+        // because it's possible that we aren't creating a new term but have
+        // identified an older term that someone re-entered using the other
+        // option, we use update_term_meta here.  had we used add_term_meta,
+        // then when the maybeCreateOtherTerm method found an existing term,
+        // we'd re-add the project meta to it.  using the update function makes
+        // sure that we only ever have one project per task.
+        
+        update_term_meta($task['id'], PostTypeRegistrationAgent::PROJECT, $this->project);
       }
     }
     
-    $this->taskId = $task['id'];
+    $this->task = $task['id'];
   }
   
   /**
@@ -235,6 +269,20 @@ class Record extends ValidatingRepository implements RecordInterface
     return ['date', 'start', 'end'];
   }
   
+  /**
+   * getPostMetaNamePrefix
+   *
+   * Returns the prefix that that is used to differentiate the post meta for
+   * this handler's sphere of influence from others.  By default, we return
+   * an empty string, but we assume that this will likely get overridden.
+   * Public in case an agent needs to ask their handler what prefix to use.
+   *
+   * @return string
+   */
+  public function getPostMetaNamePrefix(): string
+  {
+    return Theme::PREFIX . '-';
+  }
   
   /**
    * save
@@ -249,16 +297,10 @@ class Record extends ValidatingRepository implements RecordInterface
   {
     if (!$this->valid) {
       throw new RecordException(
-        'Cannot save invalid record in the database',
+        'Attempt to update invalid record',
         RecordException::INVALID_RECORD
       );
     }
-    
-    // by the time we get here, we know we have a project and task ID for this
-    // record even if they are brand new.  what we don't have yet, because it's
-    // a save action, is a record ID.  in fact, if we have one, that's a
-    // problem.
-    
     if ($this->id > 0) {
       throw new RecordException(
         'Attempt to create new database record from existing data (id: ' . $this->id . ')',
@@ -271,21 +313,106 @@ class Record extends ValidatingRepository implements RecordInterface
     // we can use that ID to attach the terms and meta information stored in
     // our properties.
     
-    $postData = [
-      'post_type'      => PostTypeRegistrationAgent::RECORD,
-      'post_title'     => $this->activity,
-      'post_status'    => 'publish',
-    ];
-    
-    $this->id = wp_insert_post($postData);
-    wp_set_object_terms($this->id, $this->projectId, PostTypeRegistrationAgent::PROJECT);
-    wp_set_object_terms($this->id, $this->taskId, PostTypeRegistrationAgent::TASK);
-    
-    foreach($this->getPostMetaNames() as $metaKey) {
-      $this->updatePostMeta($this->id, $metaKey, $this->{$metaKey});
+    $postId = wp_insert_post($this->getPostData());
+    if ($postId instanceof WP_Error || $postId === 0) {
+      throw new RecordException(
+        'Unable to save record in database',
+        RecordException::DATABASE_ERROR
+      );
     }
     
+    $this->id = $postId;
+    $this->setRecordTerms(PostTypeRegistrationAgent::PROJECT);
+    $this->setRecordTerms(PostTypeRegistrationAgent::TASK);
+    $this->setRecordMeta();
     return $this->id;
+  }
+  
+  /**
+   * getPostData
+   *
+   * Returns an array suitable for use in wp_insert_post or wp_update_post.
+   *
+   * @param int $postId
+   *
+   * @return array
+   */
+  private function getPostData(int $postId = 0): array
+  {
+    return [
+      'ID'          => $postId,
+      'post_status' => 'publish',
+      'post_type'   => PostTypeRegistrationAgent::RECORD,
+      'post_title'  => $this->activity,
+    ];
+  }
+  
+  /**
+   * setRecordTerms
+   *
+   * Sets the current record in the database to have the term in our properties
+   * and only that term.
+   *
+   * @param string $taxonomy
+   *
+   * @return void
+   * @throws RecordException
+   */
+  private function setRecordTerms(string $taxonomy): void
+  {
+    $termId = $taxonomy === PostTypeRegistrationAgent::PROJECT
+      ? $this->project
+      : $this->task;
+    
+    $terms = wp_get_object_terms($this->id, $taxonomy);
+    if (($termCount = sizeof($terms)) > 1) {
+      
+      // this shouldn't happen; we're careful to make sure that one and only
+      // one term from each of our project taxonomies are attached to a record.
+      // so, if it does happen, Dash wants to know about it so they can fix it.
+      
+      throw new RecordException(
+        'Record with more than one ' . $taxonomy,
+        RecordException::TOO_MANY_TERMS
+      );
+    } elseif ($termCount === 1) {
+      
+      // if there's one term, we'll see if its the same one as the one we
+      // identified above.  if it is, we're done.  if it's not, we remove it
+      // and proceed below.
+      
+      if ($termId === $terms[0]) {
+        return;
+      }
+      
+      wp_remove_object_terms($this->id, $terms[0], $taxonomy);
+    }
+    
+    // if we're here, then either we had zero terms attached to this post to
+    // begin with or we had a single, different term that we removed in the
+    // elseif-block above.  either way, here, we add our term to this record
+    // and return to the calling scope.
+    
+    wp_set_object_terms($this->id, $termId, $taxonomy);
+  }
+  
+  /**
+   * setRecordMeta
+   *
+   * Sets our record's meta data related to dates and times.
+   *
+   * @return void
+   * @throws HandlerException
+   */
+  private function setRecordMeta(): void
+  {
+    // typically, the getPostMetaNames method is only used by our trait's
+    // methods to determine which metadata we manipulate here.  but, we can
+    // also use it to save each of those data.
+    
+    foreach ($this->getPostMetaNames() as $metaKey) {
+      $this->updatePostMeta($this->id, $metaKey, $this->{$metaKey});
+    }
   }
   
   /**
@@ -295,10 +422,38 @@ class Record extends ValidatingRepository implements RecordInterface
    * false otherwise.
    *
    * @return bool
+   * @throws HandlerException
+   * @throws RecordException
    */
   public function update(): bool
   {
-    // TODO: Implement update() method.
+    if (!$this->valid) {
+      throw new RecordException(
+        'Attempt to update invalid record',
+        RecordException::INVALID_RECORD
+      );
+    }
+    
+    if ($this->id === 0) {
+      throw new RecordException(
+        'Attempt to update record without ID',
+        RecordException::INVALID_RECORD
+      );
+    }
+    
+    // wp_update_post returns WP_Error or zero on failure.  if we get either
+    // of those, then we'll return false.  but, otherwise, we can update the
+    // information about our terms and meta data and then return true.
+    
+    $success = wp_update_post($this->getPostData($this->id));
+    if ($success instanceof WP_Error || $success === 0) {
+      return false;
+    }
+    
+    $this->setRecordTerms(PostTypeRegistrationAgent::PROJECT);
+    $this->setRecordTerms(PostTypeRegistrationAgent::TASK);
+    $this->setRecordMeta();
+    return true;
   }
   
   /**
@@ -308,11 +463,28 @@ class Record extends ValidatingRepository implements RecordInterface
    * false otherwise.
    *
    * @return bool
+   * @throws RecordException
    */
   public function delete(): bool
   {
-    // TODO: Implement delete() method.
+    if (!$this->valid) {
+      throw new RecordException(
+        'Attempt to update invalid record',
+        RecordException::INVALID_RECORD
+      );
+    }
+    
+    if ($this->id === 0) {
+      throw new RecordException(
+        'Attempt to update record without ID',
+        RecordException::INVALID_RECORD
+      );
+    }
+   
+    // wp_delete_post returns false or null on failure and a WP_Post when it
+    // works.  so, if we call it and get a WP_Post back out of it, we're good
+    // to go.
+    
+    return wp_delete_post($this->id) instanceof WP_Post;
   }
-  
-  
 }

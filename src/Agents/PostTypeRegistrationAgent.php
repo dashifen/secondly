@@ -14,8 +14,8 @@ class PostTypeRegistrationAgent extends AbstractThemeAgent
   use TaxonomyRegistrationTrait;
   
   public const RECORD = Theme::PREFIX . '-record';
-  public const PROJECT = Theme::PREFIX . 'project';
-  public const TASK = Theme::PREFIX . 'task';
+  public const PROJECT = Theme::PREFIX . '-project';
+  public const TASK = Theme::PREFIX . '-task';
   
   /**
    * initialize

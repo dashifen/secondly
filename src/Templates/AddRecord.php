@@ -25,7 +25,7 @@ class AddRecord extends AbstractSecondlyTemplate
         'recordId'     => '',
         'action'       => 'add-record',
         'destination'  => admin_url('admin-post.php'),
-        'nonce'        => wp_nonce_field('add-action', 'add-action-nonce', false, false),
+        'nonce'        => wp_nonce_field('add-action', 'add-action-nonce', true, false),
         'jsonProjects' => json_encode($this->theme->getProjects()),
         'jsonTasks'    => json_encode($this->theme->getTasks()),
         'jsonValues'   => json_encode([]),

@@ -10,6 +10,29 @@ class RecordValidator extends AbstractValidator
   use CaseChangingTrait;
   
   /**
+   * isValid
+   *
+   * Passed the value through a validator based on the field name.
+   *
+   * @param string $field
+   * @param mixed  $value
+   *
+   * @return bool
+   */
+  public function isValid(string $field, $value): bool
+  {
+    // our parent's version of this method forces us to validate the values of
+    // an array rather than the array itself.  but, for our purposes, it's
+    // important to take a look at the project and task properties in all their
+    // array-ness.  so, we can simplify the way that we validate fields to the
+    // following ternary statement.
+  
+    return $this->canValidate($field)
+      ? $this->{$this->getValidationMethod($field)}($value)
+      : true;
+  }
+  
+  /**
    * getValidationMethod
    *
    * Returns the name of a method assumed to be defined within the concrete

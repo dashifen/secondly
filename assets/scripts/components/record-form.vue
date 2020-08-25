@@ -39,7 +39,21 @@ export default {
 
     convertEndTime() {
       this.convert("?action=convert-time&time=" + this.end, "end");
-    }
+    }/*,
+
+    submitRecord(event) {
+      const elements = Array
+        .from(event.target.form.elements)
+        .filter((element) => !!element.name);
+
+      const data = new FormData();
+      elements.forEach((element) => {
+        data.append(element.name, element.value);
+      });
+
+
+
+    }*/
   }
 };
 </script>
@@ -55,7 +69,8 @@ export default {
         </li>
         <li>
           <label for="start" class="required">Start</label>
-          <input v-model="start" type="text" id="start" name="start" aria-required="true" required @change="convertStartTime">
+          <input v-model="start" type="text" id="start" name="start" aria-required="true" required
+              @change="convertStartTime">
         </li>
         <li>
           <label for="end" class="required">End</label>

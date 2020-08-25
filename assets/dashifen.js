@@ -2560,7 +2560,21 @@ __webpack_require__.r(__webpack_exports__);
 
     convertEndTime() {
       this.convert("?action=convert-time&time=" + this.end, "end");
-    }
+    }/*,
+
+    submitRecord(event) {
+      const elements = Array
+        .from(event.target.form.elements)
+        .filter((element) => !!element.name);
+
+      const data = new FormData();
+      elements.forEach((element) => {
+        data.append(element.name, element.value);
+      });
+
+
+
+    }*/
   }
 });
 

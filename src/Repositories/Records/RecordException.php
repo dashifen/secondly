@@ -14,4 +14,6 @@ class RecordException extends RepositoryException
   public const NO_PROJECT_ID = 6;
   public const NO_RECORD_ID = 7;
   public const INVALID_RECORD = 8;
+  public const TOO_MANY_TERMS = 9;
+  public const DATABASE_ERROR = 10;
 }

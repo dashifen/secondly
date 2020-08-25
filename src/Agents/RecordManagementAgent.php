@@ -7,6 +7,7 @@ use Dashifen\Repository\RepositoryException;
 use Dashifen\WPHandler\Agents\AbstractThemeAgent;
 use Dashifen\WPHandler\Handlers\HandlerException;
 use Dashifen\Secondly\Repositories\Records\Record;
+use Dashifen\Secondly\Repositories\Records\RecordException;
 use Dashifen\WPHandler\Handlers\Themes\ThemeHandlerInterface;
 
 class RecordManagementAgent extends AbstractThemeAgent
@@ -95,16 +96,15 @@ class RecordManagementAgent extends AbstractThemeAgent
    * Uses the posted data to add a record to the database.
    *
    * @return void
+   * @throws RecordException
    * @throws RepositoryException
+   * @throws HandlerException
    */
   protected function addRecord(): void
   {
-    $record = new Record($_REQUEST);
-    
-    if (sizeof($record->errors) > 0) {
-      wp_die(join('<br>', $record->errors));
+    if (wp_verify_nonce($_REQUEST['add-action-nonce'], 'add-action')) {
+      $record = new Record($_REQUEST);
+      $recordId = $record->save();
     }
-    
-    $record->save();
   }
 }
