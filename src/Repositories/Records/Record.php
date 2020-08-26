@@ -6,10 +6,10 @@ use WP_Post;
 use WP_Term;
 use WP_Error;
 use Dashifen\Secondly\Theme;
-use Dashifen\Secondly\App\RecordValidator;
 use Dashifen\WPDebugging\WPDebuggingTrait;
 use Dashifen\Repository\RepositoryException;
 use Dashifen\WPHandler\Handlers\HandlerException;
+use Dashifen\Secondly\App\Services\RecordValidator;
 use Dashifen\WPHandler\Traits\PostMetaManagementTrait;
 use Dashifen\Secondly\Agents\PostTypeRegistrationAgent;
 use Dashifen\Secondly\Repositories\ValidatingRepository;
@@ -31,6 +31,10 @@ class Record extends ValidatingRepository implements RecordInterface
 {
   use PostMetaManagementTrait;
   use WPDebuggingTrait;
+  
+  public const DATE = Theme::PREFIX . '-date';
+  public const START = Theme::PREFIX . '-start';
+  public const END = Theme::PREFIX . '-end';
   
   protected int $id = 0;
   protected string $date;
@@ -201,7 +205,7 @@ class Record extends ValidatingRepository implements RecordInterface
     // taxonomy.  if we can't do so, the we'll insert a new term using our
     // parameters and return it's ID.  but, if the term exists, we'll just
     // send back it's ID to avoid WP yelling at us about duplicating a term.
-  
+    
     $term = get_term_by('name', $termName, $taxonomy);
     return !($term instanceof WP_Term)
       ? wp_insert_term($termName, $taxonomy)['term_id']
@@ -266,6 +270,10 @@ class Record extends ValidatingRepository implements RecordInterface
    */
   protected function getPostMetaNames(): array
   {
+    // for our constants above, we already prefixed them for use outside this
+    // class. here we just return the distinct portions of the names of our
+    // metadata and, in the next method, we specify the prefix.
+    
     return ['date', 'start', 'end'];
   }
   
@@ -480,7 +488,7 @@ class Record extends ValidatingRepository implements RecordInterface
         RecordException::INVALID_RECORD
       );
     }
-   
+    
     // wp_delete_post returns false or null on failure and a WP_Post when it
     // works.  so, if we call it and get a WP_Post back out of it, we're good
     // to go.

@@ -80,8 +80,8 @@ export default {
           <label for="activity" class="required">Activity</label>
           <input v-model="activity" type="text" id="activity" name="activity" aria-required="true" required>
         </li>
-        <li is="select-with-other" :options="jsonProjects" name="project" :original="project"></li>
-        <li is="select-with-other" :options="jsonTasks" name="task" :original="task"></li>
+        <li is="select-with-other" :options="jsonProjects" :groups="false" name="project" :original="project"></li>
+        <li is="select-with-other" :options="jsonTasks" :groups="true" name="task" :original="task"></li>
       </ol>
 
       <button type="submit">Save Record</button>

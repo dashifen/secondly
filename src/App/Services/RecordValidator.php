@@ -1,6 +1,6 @@
 <?php
 
-namespace Dashifen\Secondly\App;
+namespace Dashifen\Secondly\App\Services;
 
 use Dashifen\Validator\AbstractValidator;
 use Dashifen\WPHandler\Traits\CaseChangingTrait;
