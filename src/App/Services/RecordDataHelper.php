@@ -17,8 +17,19 @@ class RecordDataHelper
 {
   use WPDebuggingTrait;
   
+  private QueryFactory $queryFactory;
   private array $projects;
   private array $tasks;
+  
+  /**
+   * RecordDataHelper constructor.
+   *
+   * @param QueryFactory|null $queryFactory
+   */
+  public function __construct(?QueryFactory $queryFactory = null)
+  {
+    $this->queryFactory = $queryFactory ?? new QueryFactory(new MySqlEngine());
+  }
   
   /**
    * getProjects
@@ -103,7 +114,7 @@ class RecordDataHelper
   /**
    * getTerms
    *
-   * Performs a single database query to return an array of 3-tuple of task
+   * Performs a single database query to return an array of 3-tuples of task
    * IDs, names, and associated projects.
    *
    * @return array
@@ -119,7 +130,7 @@ class RecordDataHelper
     // project and return that to the calling scope.  this reduces the
     // operation from O(N) queries, where N is the number of projects, to O(1).
     
-    $query = $this->getQueryFactory()
+    $query = $this->queryFactory
       ->select('tt.term_id', 'name', alias('meta_value', 'project_id'))
       ->from(alias($wpdb->term_taxonomy, 'tt'))
       ->join(alias($wpdb->terms, 't'), on('tt.term_id', 't.term_id'))
@@ -136,18 +147,6 @@ class RecordDataHelper
     $sql = str_replace('?', '%s', $query->sql());
     $statement = $wpdb->prepare($sql, $query->params());
     return $wpdb->get_results($statement);
-  }
-  
-  /**
-   * getQueryFactory
-   *
-   * Returns a latitude QueryFactory.
-   *
-   * @return QueryFactory
-   */
-  private function getQueryFactory()
-  {
-    return new QueryFactory(new MySqlEngine());
   }
   
   /**
@@ -169,7 +168,7 @@ class RecordDataHelper
     // in one swell foop.
   
     global $wpdb;
-    $query = $this->getQueryFactory()
+    $query = $this->queryFactory
       ->select(
         alias('ID', 'id'),
         alias('post_title', 'activity'),
