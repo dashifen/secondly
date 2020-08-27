@@ -16,6 +16,15 @@ use Dashifen\Secondly\Agents\Collection\SecondlyAgentCollection;
 use Dashifen\WPHandler\Agents\Collection\AgentCollectionInterface;
 use Dashifen\WPHandler\Hooks\Collection\Factory\HookCollectionFactoryInterface;
 
+/**
+ * Class Theme
+ *
+ * @method getProjects
+ * @method getTasks
+ * @method getValues
+ *
+ * @package Dashifen\Secondly
+ */
 class Theme extends AbstractThemeHandler
 {
   use OptionsManagementTrait;

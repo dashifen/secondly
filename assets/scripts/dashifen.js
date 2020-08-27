@@ -1,4 +1,5 @@
-import RecordForm from './record-form.js';
+import RecordForm from "./record-form.js";
+import RecordRow from "./record-row.js";
 
 document.addEventListener('DOMContentLoaded', () => {
   const html = document.getElementsByTagName('html')[0];
@@ -6,4 +7,5 @@ document.addEventListener('DOMContentLoaded', () => {
   html.classList.add('js');
 
   RecordForm.initialize();
+  RecordRow.initialize();
 });

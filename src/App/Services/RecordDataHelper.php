@@ -207,6 +207,12 @@ class RecordDataHelper
   
     $sql = str_replace('?', '%s', $query->sql());
     $statement = $wpdb->prepare($sql, $query->params());
-    return $wpdb->get_results($statement, ARRAY_A);
+    $records = $wpdb->get_results($statement, ARRAY_A);
+    
+    // there's only one other thing we want to do:  index the array we return
+    // to the calling scope based on the ID column of our data.  a cunning use
+    // of array_combine and array_column makes this easy:
+    
+    return array_combine(array_column($records, 'id'), $records);
   }
 }

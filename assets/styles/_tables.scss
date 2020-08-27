@@ -1,0 +1,41 @@
+table {
+  border: 1px solid $black;
+  border-collapse: collapse;
+  width: 100%;
+
+  th, td {
+    margin: 0;
+    padding: rem(5px);
+    text-align: left;
+    vertical-align: middle;
+  }
+
+  thead th {
+    background-color: $green;
+    border-bottom: 1px solid $black;
+    vertical-align: bottom;
+  }
+
+  tbody {
+    &:hover {
+      background-color: lighten($yellow, 20%);
+    }
+
+    th {
+      font-weight: normal;
+    }
+
+    tr td:last-child:not([colspan]) {
+      text-align: right;
+    }
+  }
+
+  .hide-fields {
+    input {
+      background: transparent;
+      border-color: transparent;
+      color: $black;
+      cursor: default;
+    }
+  }
+}

@@ -1,7 +1,7 @@
 import Vue from "vue";
 import Vuex from "vuex";
 import { getVuexStore } from "./get-vuex-store.js";
-import RecordForm from "./components/record-form.vue";
+import RecordRow from "./components/record-row.vue"
 
 Vue.use(Vuex);
 
@@ -10,10 +10,9 @@ export default {
     const store = getVuexStore();
 
     new Vue({
-      el: '#record-form',
-      components: {RecordForm},
+      el: '#records',
+      components: {RecordRow},
       store
     });
   }
 };
-

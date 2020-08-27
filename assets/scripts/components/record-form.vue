@@ -7,19 +7,24 @@ export default {
   name: "record-form",
   components: {SelectWithOther},
   props: ["recordId", "destination", "action", "jsonValues", "jsonProjects",
-    "jsonTasks", "nonce"],
+    "jsonTasks", "nonce", "ajax"],
 
   data() {
-    const values = JSON.parse(this.jsonValues);
 
-    return {
-      "date": values.date || null,
-      "start": values.start || null,
-      "end": values.end || null,
-      "activity": values.activity || null,
-      "project": values.project || null,
-      "task": values.task || null
-    };
+    // if our jsonValues property has data to parse, we do so.  otherwise, we
+    // default to an empty object which is likely the case for the new record
+    // entry form.
+
+    return this.jsonValues
+        ? JSON.parse(this.jsonValues)
+        : {
+          date: '',
+          start: '',
+          end: '',
+          activity: '',
+          project: '',
+          task: '',
+        };
   },
 
   methods: {

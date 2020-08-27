@@ -4,14 +4,43 @@
 
 <section id="record-form">
   <record-form
-    record-id="{{ recordForm.recordId }}"
-    action="{{ recordForm.action }}"
-    destination="{{ recordForm.destination }}"
-    json-values='{{ recordForm.jsonValues }}'
-    json-projects='{{ recordForm.jsonProjects }}'
-    json-tasks='{{ recordForm.jsonTasks }}'
-    nonce='{{ recordForm.nonce }}'
+    record-id="{{ page.recordId }}"
+    action="{{ page.action }}"
+    destination="{{ page.destination }}"
+    json-projects='{{ page.jsonProjects }}'
+    json-tasks='{{ page.jsonTasks }}'
+    nonce='{{ page.nonce }}'
+    json-values=""
   ></record-form>
+</section>
+
+<section id="records">
+  <table>
+    <thead>
+    <tr>
+      <th scope="col" id="col-date">Date</th>
+      <th scope="col" id="col-start">Start</th>
+      <th scope="col" id="col-end">End</th>
+      <th scope="col" id="col-activity">Activity</th>
+      <th scope="col" id="col-project">Project</th>
+      <th scope="col" id="col-task">Task</th>
+      <th scope="col" id="col-controls">
+        <span class="screen-reader-text">
+          Controls
+        </span>
+      </th>
+    </tr>
+    </thead>
+    {% for record in page.records %}
+      <tbody is="record-row"
+        json-record='{{ record | json_encode }}'
+        json-projects='{{ page.jsonProjects }}'
+        json-tasks='{{ page.jsonTasks }}'
+        nonce='{{ page.nonce }}'
+        row="{{ loop.index }}"
+      ></tbody>
+    {% endfor %}
+  </table>
 </section>
 
 {% include 'partials/footer.twig' %}

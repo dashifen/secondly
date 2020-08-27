@@ -155,6 +155,75 @@ __webpack_require__.r(__webpack_exports__);
 
 /***/ }),
 
+/***/ "./assets/scripts/components/record-row.vue":
+/*!**************************************************!*\
+  !*** ./assets/scripts/components/record-row.vue ***!
+  \**************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _record_row_vue_vue_type_template_id_1352db9c___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./record-row.vue?vue&type=template&id=1352db9c& */ "./assets/scripts/components/record-row.vue?vue&type=template&id=1352db9c&");
+/* harmony import */ var _record_row_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./record-row.vue?vue&type=script&lang=js& */ "./assets/scripts/components/record-row.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport *//* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
+
+
+
+
+
+/* normalize component */
+
+var component = Object(_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__["default"])(
+  _record_row_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__["default"],
+  _record_row_vue_vue_type_template_id_1352db9c___WEBPACK_IMPORTED_MODULE_0__["render"],
+  _record_row_vue_vue_type_template_id_1352db9c___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"],
+  false,
+  null,
+  null,
+  null
+  
+)
+
+/* hot reload */
+if (false) { var api; }
+component.options.__file = "assets/scripts/components/record-row.vue"
+/* harmony default export */ __webpack_exports__["default"] = (component.exports);
+
+/***/ }),
+
+/***/ "./assets/scripts/components/record-row.vue?vue&type=script&lang=js&":
+/*!***************************************************************************!*\
+  !*** ./assets/scripts/components/record-row.vue?vue&type=script&lang=js& ***!
+  \***************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_vue_loader_lib_index_js_vue_loader_options_record_row_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/vue-loader/lib??vue-loader-options!./record-row.vue?vue&type=script&lang=js& */ "./node_modules/vue-loader/lib/index.js?!./assets/scripts/components/record-row.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport */ /* harmony default export */ __webpack_exports__["default"] = (_node_modules_vue_loader_lib_index_js_vue_loader_options_record_row_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__["default"]); 
+
+/***/ }),
+
+/***/ "./assets/scripts/components/record-row.vue?vue&type=template&id=1352db9c&":
+/*!*********************************************************************************!*\
+  !*** ./assets/scripts/components/record-row.vue?vue&type=template&id=1352db9c& ***!
+  \*********************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_record_row_vue_vue_type_template_id_1352db9c___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!../../../node_modules/vue-loader/lib??vue-loader-options!./record-row.vue?vue&type=template&id=1352db9c& */ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./assets/scripts/components/record-row.vue?vue&type=template&id=1352db9c&");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_record_row_vue_vue_type_template_id_1352db9c___WEBPACK_IMPORTED_MODULE_0__["render"]; });
+
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_record_row_vue_vue_type_template_id_1352db9c___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
+
+
+
+/***/ }),
+
 /***/ "./assets/scripts/components/select-with-other.vue":
 /*!*********************************************************!*\
   !*** ./assets/scripts/components/select-with-other.vue ***!
@@ -252,6 +321,8 @@ __webpack_require__.r(__webpack_exports__);
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _record_form_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./record-form.js */ "./assets/scripts/record-form.js");
+/* harmony import */ var _record_row_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./record-row.js */ "./assets/scripts/record-row.js");
+
 
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -260,43 +331,27 @@ document.addEventListener('DOMContentLoaded', () => {
   html.classList.add('js');
 
   _record_form_js__WEBPACK_IMPORTED_MODULE_0__["default"].initialize();
+  _record_row_js__WEBPACK_IMPORTED_MODULE_1__["default"].initialize();
 });
 
 
 /***/ }),
 
-/***/ "./assets/scripts/record-form.js":
-/*!***************************************!*\
-  !*** ./assets/scripts/record-form.js ***!
-  \***************************************/
-/*! exports provided: default */
+/***/ "./assets/scripts/get-vuex-store.js":
+/*!******************************************!*\
+  !*** ./assets/scripts/get-vuex-store.js ***!
+  \******************************************/
+/*! exports provided: getVuexStore */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var vue__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! vue */ "./node_modules/vue/dist/vue.esm.js");
-/* harmony import */ var vuex__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! vuex */ "./node_modules/vuex/dist/vuex.esm.js");
-/* harmony import */ var _components_record_form_vue__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./components/record-form.vue */ "./assets/scripts/components/record-form.vue");
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "getVuexStore", function() { return getVuexStore; });
+/* harmony import */ var vuex__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! vuex */ "./node_modules/vuex/dist/vuex.esm.js");
 
-
-
-
-vue__WEBPACK_IMPORTED_MODULE_0__["default"].use(vuex__WEBPACK_IMPORTED_MODULE_1__["default"]);
-
-/* harmony default export */ __webpack_exports__["default"] = ({
-  initialize() {
-    const store = getVuexStore();
-
-    new vue__WEBPACK_IMPORTED_MODULE_0__["default"]({
-      el: '#vue-root',
-      components: {RecordForm: _components_record_form_vue__WEBPACK_IMPORTED_MODULE_2__["default"]},
-      store
-    });
-  }
-});
 
 function getVuexStore() {
-  return new vuex__WEBPACK_IMPORTED_MODULE_1__["default"].Store({
+  return new vuex__WEBPACK_IMPORTED_MODULE_0__["default"].Store({
     state: {
       'project': 0,
       'task': 0,
@@ -324,6 +379,76 @@ function getVuexStore() {
   });
 }
 
+
+/***/ }),
+
+/***/ "./assets/scripts/record-form.js":
+/*!***************************************!*\
+  !*** ./assets/scripts/record-form.js ***!
+  \***************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var vue__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! vue */ "./node_modules/vue/dist/vue.esm.js");
+/* harmony import */ var vuex__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! vuex */ "./node_modules/vuex/dist/vuex.esm.js");
+/* harmony import */ var _get_vuex_store_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./get-vuex-store.js */ "./assets/scripts/get-vuex-store.js");
+/* harmony import */ var _components_record_form_vue__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./components/record-form.vue */ "./assets/scripts/components/record-form.vue");
+
+
+
+
+
+vue__WEBPACK_IMPORTED_MODULE_0__["default"].use(vuex__WEBPACK_IMPORTED_MODULE_1__["default"]);
+
+/* harmony default export */ __webpack_exports__["default"] = ({
+  initialize() {
+    const store = Object(_get_vuex_store_js__WEBPACK_IMPORTED_MODULE_2__["getVuexStore"])();
+
+    new vue__WEBPACK_IMPORTED_MODULE_0__["default"]({
+      el: '#record-form',
+      components: {RecordForm: _components_record_form_vue__WEBPACK_IMPORTED_MODULE_3__["default"]},
+      store
+    });
+  }
+});
+
+
+
+/***/ }),
+
+/***/ "./assets/scripts/record-row.js":
+/*!**************************************!*\
+  !*** ./assets/scripts/record-row.js ***!
+  \**************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var vue__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! vue */ "./node_modules/vue/dist/vue.esm.js");
+/* harmony import */ var vuex__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! vuex */ "./node_modules/vuex/dist/vuex.esm.js");
+/* harmony import */ var _get_vuex_store_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./get-vuex-store.js */ "./assets/scripts/get-vuex-store.js");
+/* harmony import */ var _components_record_row_vue__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./components/record-row.vue */ "./assets/scripts/components/record-row.vue");
+
+
+
+
+
+vue__WEBPACK_IMPORTED_MODULE_0__["default"].use(vuex__WEBPACK_IMPORTED_MODULE_1__["default"]);
+
+/* harmony default export */ __webpack_exports__["default"] = ({
+  initialize() {
+    const store = Object(_get_vuex_store_js__WEBPACK_IMPORTED_MODULE_2__["getVuexStore"])();
+
+    new vue__WEBPACK_IMPORTED_MODULE_0__["default"]({
+      el: '#records',
+      components: {RecordRow: _components_record_row_vue__WEBPACK_IMPORTED_MODULE_3__["default"]},
+      store
+    });
+  }
+});
 
 
 /***/ }),
@@ -2709,19 +2834,24 @@ __webpack_require__.r(__webpack_exports__);
   name: "record-form",
   components: {SelectWithOther: _select_with_other_vue__WEBPACK_IMPORTED_MODULE_1__["default"]},
   props: ["recordId", "destination", "action", "jsonValues", "jsonProjects",
-    "jsonTasks", "nonce"],
+    "jsonTasks", "nonce", "ajax"],
 
   data() {
-    const values = JSON.parse(this.jsonValues);
 
-    return {
-      "date": values.date || null,
-      "start": values.start || null,
-      "end": values.end || null,
-      "activity": values.activity || null,
-      "project": values.project || null,
-      "task": values.task || null
-    };
+    // if our jsonValues property has data to parse, we do so.  otherwise, we
+    // default to an empty object which is likely the case for the new record
+    // entry form.
+
+    return this.jsonValues
+        ? JSON.parse(this.jsonValues)
+        : {
+          date: '',
+          start: '',
+          end: '',
+          activity: '',
+          project: '',
+          task: '',
+        };
   },
 
   methods: {
@@ -2756,6 +2886,41 @@ __webpack_require__.r(__webpack_exports__);
 
 
     }*/
+  }
+});
+
+
+/***/ }),
+
+/***/ "./node_modules/vue-loader/lib/index.js?!./assets/scripts/components/record-row.vue?vue&type=script&lang=js&":
+/*!*****************************************************************************************************************************!*\
+  !*** ./node_modules/vue-loader/lib??vue-loader-options!./assets/scripts/components/record-row.vue?vue&type=script&lang=js& ***!
+  \*****************************************************************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _record_form_vue__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./record-form.vue */ "./assets/scripts/components/record-form.vue");
+
+
+
+/* harmony default export */ __webpack_exports__["default"] = ({
+  name: "record-row",
+  props: ["row", "jsonRecord", "jsonProjects", "jsonTasks", "nonce"],
+  components: {RecordForm: _record_form_vue__WEBPACK_IMPORTED_MODULE_0__["default"]},
+
+  data() {
+    return {
+      record: JSON.parse(this.jsonRecord),
+      formInvisible: false
+    }
+  },
+
+  computed: {
+    rowId() {
+      return 'row-' + this.row;
+    }
   }
 });
 
@@ -3058,6 +3223,106 @@ var render = function() {
       _vm._v(" "),
       _c("span", { domProps: { innerHTML: _vm._s(_vm.nonce) } })
     ])
+  ])
+}
+var staticRenderFns = []
+render._withStripped = true
+
+
+
+/***/ }),
+
+/***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./assets/scripts/components/record-row.vue?vue&type=template&id=1352db9c&":
+/*!***************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./assets/scripts/components/record-row.vue?vue&type=template&id=1352db9c& ***!
+  \***************************************************************************************************************************************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c("tbody", [
+    _c(
+      "tr",
+      { staticClass: "data-row", class: { hidden: _vm.formInvisible } },
+      [
+        _c("td", {
+          attrs: { headers: "col-date", headers: _vm.rowId },
+          domProps: { textContent: _vm._s(_vm.record.date) }
+        }),
+        _vm._v(" "),
+        _c("td", {
+          attrs: { headers: "col-start", headers: _vm.rowId },
+          domProps: { textContent: _vm._s(_vm.record.start) }
+        }),
+        _vm._v(" "),
+        _c("td", {
+          attrs: { headers: "col-end", headers: _vm.rowId },
+          domProps: { textContent: _vm._s(_vm.record.end) }
+        }),
+        _vm._v(" "),
+        _c("th", {
+          attrs: { headers: "col-activity", id: _vm.rowId, scope: "row" },
+          domProps: { textContent: _vm._s(_vm.record.activity) }
+        }),
+        _vm._v(" "),
+        _c("td", {
+          attrs: { headers: "col-project", headers: _vm.rowId },
+          domProps: { textContent: _vm._s(_vm.record.project) }
+        }),
+        _vm._v(" "),
+        _c("td", {
+          attrs: { headers: "col-task", headers: _vm.rowId },
+          domProps: { textContent: _vm._s(_vm.record.task) }
+        }),
+        _vm._v(" "),
+        _c("td", { attrs: { headers: "col-controls", headers: _vm.rowId } }, [
+          _c(
+            "button",
+            {
+              attrs: { type: "button" },
+              on: {
+                click: function($event) {
+                  $event.preventDefault()
+                  _vm.formInvisible = !_vm.formInvisible
+                }
+              }
+            },
+            [_vm._v("Edit")]
+          )
+        ])
+      ]
+    ),
+    _vm._v(" "),
+    _c(
+      "tr",
+      { staticClass: "form-row", class: { hidden: !_vm.formInvisible } },
+      [
+        _c(
+          "td",
+          { attrs: { colspan: "7" } },
+          [
+            _c("record-form", {
+              attrs: {
+                ajax: "true",
+                "record-id": _vm.record.id,
+                "json-projects": _vm.jsonProjects,
+                "json-tasks": _vm.jsonTasks,
+                "json-values": _vm.jsonRecord,
+                nonce: _vm.nonce
+              }
+            })
+          ],
+          1
+        )
+      ]
+    )
   ])
 }
 var staticRenderFns = []
